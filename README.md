@@ -36,7 +36,7 @@ this project is a recent update of TyranoBuilder for Android
    - [x] access notification to save and read game saves according to android policy
    - [x] notification when leaving the game
 
-5. futres updated project
+5. future updates project
    - [ ] ads by google admob
    - [ ] iOS
    - [ ] Flutter
