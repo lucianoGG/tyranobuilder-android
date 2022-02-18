@@ -34,10 +34,11 @@ this project is a recent update of TyranoBuilder for Android
 - [x] notification when leaving the game
 
 5. futres updated project
-- [] ads by google admob
-- [] iOS
-- [] Flutter
+- [ ] ads by google admob
+- [ ] iOS
+- [ ] Flutter
 
 6. buy a coffee on paypal
+
 ![alt text](images-ignore/QRCode.png)
 
