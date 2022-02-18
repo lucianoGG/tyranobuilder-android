@@ -1,0 +1,447 @@
+/*reset css */
+@import url("./css/font.css");
+@import url("./css/animate.css");
+@import url("./css/glink.css");
+
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,
+form,fieldset,input,textarea,p,blockquote,th,td{
+    padding:0;
+    margin:0;
+}
+table{
+    border-collapse: collapse;
+    border-spacing:0;
+}
+fieldset,img{
+    border:0;
+}
+address,caption,cite,code,dfn,em,strong,th,var{
+    font-weight:normal;
+    font-style:normal;
+}
+ol,ul{
+    list-style:none;
+}
+caption,th{
+    text-align:left;
+}
+h1,h2,h3,h4,h5,h6{
+    font-weight:normal;
+    font-size:100%;
+}
+q:before,q:after{
+    content:'';
+}
+abbr,acronym{
+    border:0;
+}
+
+
+/*smart novel original css */
+
+.vertical_text{
+    
+    font-family:'@ＭＳ 明朝';
+    /*color:white;*/
+    writing-mode:tb-rl;
+    writing-mode:vertical-rl ;
+    -webkit-writing-mode:vertical-rl ;
+    float:right;
+    height:100%;
+
+}
+
+
+.layer_menu {
+    display:none;
+    font-size:1.3em;
+    font-weight:bold;
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+
+
+/*メニュー*/
+.menu_item {position:relative;margin-top:2%;text-align:center;}
+.menu_item img {cursor:pointer}
+
+/*
+.menu_item img {width:auto;max-width:80%;max-height:10%;}
+.display_menu .button:first-child {margin-top:0;}
+.display_menu{
+    overflow:visible;padding:0;
+    z-index: 10000;
+    width:100%;
+    height:100%;
+    position: absolute;
+    display:block;
+}
+*/
+
+
+/* バックログ画面
+--------------------------------------*/
+.log_body {
+	width: 1000px;
+	height: 450px;
+	margin: 50px 0 0 0;
+	padding: 20px;
+	border: 1px solid #798993;
+	border-radius: 0;
+	color: #798993;
+	background: rgba(251, 250, 249, .5);
+	font-weight: normal;
+	text-align: left;
+	line-height: 1.6em;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+/* スクロールバー */
+.log_body::-webkit-scrollbar {
+	width: 12px;
+}
+
+.log_body::-webkit-scrollbar-thumb {
+	border-radius: 0;
+	background: #0F60EA;
+}
+
+.log_body::-webkit-scrollbar-track{
+	background: none;
+}
+
+
+.display_menu .button:first-child {margin-top:0;}
+.display_menu{
+    overflow:visible;padding:0;
+    z-index: 10000;
+    width:100%;
+    height:100%;
+    position: absolute;
+    display:block;
+    /*overflow:visible;padding:2%;display:table-cell;vertical-align:middle*/
+}
+
+/* セーブ時の画面の設定
+--------------------------*/
+/* セーブデータリスト全体の設定 */
+
+.area_save_list {
+	display: block;
+	width: 1100px;
+	height: 520px;
+	margin: 30px 0 0 0;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+/* スクロールバー */
+.area_save_list::-webkit-scrollbar {
+	width:12px;
+}
+
+.area_save_list::-webkit-scrollbar-thumb {
+	border-radius: 0;
+	background: #0F60EA;
+}
+
+.area_save_list::-webkit-scrollbar-track {
+	border-radius: 0;
+	background: rgba(255, 255, 255, 0.5);
+}
+
+
+/* セーブデータリスト全体の設定 */
+.save_list {
+	display: table;
+	table-layout: fixed;
+	width: 1010px;
+	height: 120px;
+	margin: 0;
+	padding: 0;
+	font-size: 18px;
+	font-weight: normal;
+	border: none;
+	border-collapse: separate;
+	border-spacing: 0 10px;
+	box-sizing: border-box;
+}
+
+/* セーブデータの設定 */
+.save_list_item {
+	display:table-row;
+	width: 1000px;
+	height: 120px;
+	margin: 0;
+	padding: 0;
+	border: none;
+	cursor: pointer;
+}
+
+.save_list_item:hover{
+	background-color: rgba(153, 219, 255, .5);
+}
+
+
+/* セーブデータのサムネイル部分の設定 */
+.save_list_item_thumb {
+	display: table-cell;
+	width: 190px;
+	height: 120px;
+	margin: 0;
+	padding: 0;
+	background-color: rgba(255 ,255 ,255 ,.3);
+	background-image: url('images/system/saveslot.png');
+	background-repeat: y-repeat;
+	background-position: left top;
+	box-sizing: border-box;
+}
+
+/* サムネイル画像の設定 */
+.save_list_item_thumb img {
+	width: 160px;
+	height: 90px;
+	margin: 15px 3px 0 0;
+	padding: 0;
+	border-radius: 0;
+}
+
+/* セーブデータのテキスト部文の設定 */
+.save_list_item_area {
+	display: table-cell;
+	width: 810px;
+	height: 120px;
+	padding: 15px 10px 0 0;
+	border:none;
+	border-radius: 0;
+	background-color: rgba(255 ,255 ,255 ,.3);
+	background-image: url('images/system/saveslot.png');
+	background-repeat: y-repeat;
+	background-position: right top;
+	text-align: left;
+	vertical-align: top;
+	box-sizing: border-box;
+}
+
+/* セーブデータの日付の設定 */
+.save_list_item_date {
+	display: block;
+	margin: 0;
+	padding: 0 0 0 20px;
+	line-height: 1;
+	color: #02ABE6;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+
+/* セーブデータのテキストの設定 */
+.save_list_item_text {
+	display: block;
+	height: 70px;
+	margin: 0;
+	padding: 5px 0 0 20px;
+	line-height: 1.3;
+	color: #666;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+
+.layer_event_click{
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.layer{
+	background-size:100% 100%;
+}
+
+.button_menu{
+    position:absolute;
+    z-index:99999;
+    top:20px;
+    cursor:pointer;
+}
+
+/*
+ CSSを修正することで、ゲーム画面をカスタマイズすることが可能です
+ * */
+
+/*ゲーム枠の外側の色を指定します*/
+
+body{
+	
+    background-color:black;
+    -webkit-tap-highlight-color: transparent;
+    overflow:hidden;
+    touch-action: manipulation;
+
+}
+
+/*次へのクリックを促すアイコン*/
+
+.img_next{
+    padding-left:3px;
+}
+
+/*テキストボックスの共通スタイル*/
+.text_box{
+
+}
+
+.tyrano_base{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+  
+    -webkit-text-size-adjust:none;
+
+/*  
+  	position: absolute;
+*/
+
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+   
+}
+
+
+/* 反転 */
+.reflect{
+    -webkit-transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+	filter: FlipH;
+}
+
+/*ダイアログボックス*/
+#alertify{
+    z-index:9999999;
+}
+
+
+/*vchat **************************/
+
+/*——————–
+ 吹き出しを作る
+——————–*/
+
+.vchat_base{
+    
+    width:100%;
+    height:100px;
+    background-color:red;
+    position:relative;
+    display:none;
+    overflow:scroll;    
+       
+}
+
+/* 全体のスタイル */
+.vchat {
+  margin-top: 25px;
+}
+
+/*名前欄*/
+.vchat-name {
+    margin-top:20px;
+    font-family: Quicksand, 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif; 
+}
+
+/*吹き出しテキスト */
+.vchat-text {
+  -webkit-text-size-adjust:none;
+  position: relative;
+  margin-left: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 12%;
+  box-shadow: 0px 3px 3px -3px rgba(0,0,0,0.6);
+  -webkit-box-shadow: 0px 3px 3px -3px rgba(0,0,0,0.6);
+  -moz-box-shadow: 0px 3px 3px -3px rgba(0,0,0,0.6);
+  font-size:"xx-large";
+ 
+  word-break: keep-all;
+  line-break: strict;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-touch-callout:none;
+  -webkit-user-select: none;
+  font-family: Quicksand, 游ゴシック体, "Yu Gothic", YuGothic, "ヒラギノ角ゴシック Pro", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif; 
+  /*float: left;*/
+}
+
+.ribbon20-wrapper {  
+  display: block;
+  position: relative;
+  margin: 0 auto;
+  padding: 20px 0;
+  width: 300px;
+  background: #f1f1f1;
+  }
+.ribbon20 {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 5px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  margin: 0;
+  height: 24px;
+  line-height: 24px;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: white;
+  background: #70c7ff;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.12);
+}
+.ribbon20:before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: -7px;
+  border: none;
+  height: 24px;
+  width: 7px;
+  background: inherit;
+  border-radius: 5px 0 0 5px;
+}
+
+/*
+.ribbon20:after {
+  position: absolute;
+  content: '';
+  bottom: -7px;
+  left: -5px;
+  border: none;
+  height: 7px;
+  width: 5px;
+  background: #4d99ca;
+  border-radius: 5px 0 0 5px;
+}
+*/
+
+/* 回り込み解除 */
+.vchat:after,.vchat:before {
+  clear: both;
+  content: "";
+  display: block;
+}
+
+
+
+
+
+
