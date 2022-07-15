@@ -1,13 +1,8 @@
 package git.lucianogg.tyranobuilder;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import static android.content.ContentValues.TAG;
 
-import android.content.Context;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
@@ -23,16 +19,33 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +58,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 
+    private AdView mAdView;
+
+    private InterstitialAd interstitialAd;
+    private CountDownTimer countDownTimer;
+    private long timerMilliseconds;
+    private boolean gameIsInProgress;
+
+    AdsConfig adsConfig;
+
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +83,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
         final String base_url = "file:///android_asset/";;
 
         this.base_url = base_url;
+
+
+        adsConfig = new AdsConfig();
 
         String userAgent = webview.getSettings().getUserAgentString();
         webview.getSettings().setUserAgentString(userAgent + ";tyranoplayer-android-1.0");
@@ -106,7 +133,104 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+if(adsConfig.isShowBannerAd){
+    List<String> testDeviceIds = Collections.singletonList("33BE2250B43518CCDA7DE426D04EE231");
+    RequestConfiguration configuration =
+            new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+    MobileAds.setRequestConfiguration(configuration);
+
+
+    //ADS
+    MobileAds.initialize(this, initializationStatus -> {
+    });
+
+    MobileAds.setRequestConfiguration(
+            new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList("ABCDEF012345"))
+                    .build());
+
+    mAdView = new AdView(this);
+
+    mAdView = findViewById(R.id.adView);
+    AdRequest adRequest = new AdRequest.Builder().build();
+    mAdView.loadAd(adRequest);
+}
+
+       if(adsConfig.isShowInterstitialAd){
+           loadAd();
+           startInterstitialAd();
+       }
+
     }
+
+
+
+    public void loadAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(
+                this,
+                getString(R.string.InterstitialAd),
+                adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        MainActivity.this.interstitialAd = interstitialAd;
+                        Log.i(TAG, "onAdLoaded");
+                        interstitialAd.setFullScreenContentCallback(
+                                new FullScreenContentCallback() {
+                                    @Override
+                                    public void onAdDismissedFullScreenContent() {
+
+                                        MainActivity.this.interstitialAd = null;
+                                        Log.d("TAG", "The ad was dismissed.");
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                        MainActivity.this.interstitialAd = null;
+                                        Log.d("TAG", "The ad failed to show.");
+                                    }
+
+                                    @Override
+                                    public void onAdShowedFullScreenContent() {
+                                        // Called when fullscreen content is shown.
+                                        Log.d("TAG", "The ad was shown.");
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.i(TAG, loadAdError.getMessage());
+                        interstitialAd = null;
+                    }
+                });
+    }
+
+    private void showInterstitial() {
+        // Show the ad if it's ready. Otherwise toast and restart the game.
+        if (interstitialAd != null) {
+            interstitialAd.show(this);
+        } else {
+            startInterstitialAd();
+        }
+    }
+    private void startInterstitialAd() {
+        if (interstitialAd == null) {
+            loadAd();
+        }
+
+        InterstitialAdSeconds(adsConfig.seconds);
+    }
+
+    private void InterstitialAdSeconds(long milliseconds) {
+        gameIsInProgress = true;
+        timerMilliseconds = milliseconds;
+        createTimer(timerMilliseconds);
+        countDownTimer.start();
+    }
+
+
 
     @Override
     public void onResume() {
@@ -117,6 +241,12 @@ public class MainActivity extends AppCompatActivity {
         }else {
             flag_init = true;
         }
+
+        mAdView.resume();
+
+        if (gameIsInProgress) {
+            InterstitialAdSeconds(timerMilliseconds);
+        }
     }
 
     @Override
@@ -124,6 +254,9 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         webview.loadUrl("javascript:_tyrano_player.pauseAllAudio();");
         webview.onPause();
+
+        mAdView.pause();
+        countDownTimer.cancel();
     }
 
     @Override
@@ -134,6 +267,27 @@ public class MainActivity extends AppCompatActivity {
             webview = null;
         }
 
+        mAdView.destroy();
+
+    }
+
+    private void createTimer(final long milliseconds) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        countDownTimer = new CountDownTimer(milliseconds, 50) {
+            @Override
+            public void onTick(long millisUnitFinished) {
+                timerMilliseconds = millisUnitFinished;
+               // Log.d("TAG", "seconds remaining:"  + millisUnitFinished);
+            }
+
+            @Override
+            public void onFinish() {
+                showInterstitial();
+            }
+        };
     }
 
     public void startGame(BufferedReader reader){
@@ -267,6 +421,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (interstitialAd != null) {
+            interstitialAd.show(this);
+        } else {
+            exitGame();
+        }
+
+    }
+
+    public  void exitGame(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
                 .setMessage("sair do jogo?")
