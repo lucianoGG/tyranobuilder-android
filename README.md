@@ -35,13 +35,35 @@ this project is a recent update of TyranoBuilder for Android
    - [x] android 12 working
    - [x] access notification to save and read game saves according to android policy
    - [x] notification when leaving the game
+   - [x] ads by Google admob
 
 5. future updates project
-   - [ ] ads by google admob
    - [ ] iOS
    - [ ] Flutter
+   
+6. ads by Google admob - edit strings.xml file ( APPLICATION_ID_ADS and BannerAd and InterstitialAd )
+   ```sh
+   TyranoBuilderAppAndroid\app\src\main\res\values -> strings.xml
+   ```
+   
+   ![alt text](images-ignore/strings.png)
+   
+Edit the AdsConfig.class file if necessary
+   ```sh
+   TyranoBuilderAppAndroid\app\src\main\java\git\lucianogg\tyranobuilder -> AdsConfig.class
+   ```
+   
+  * isShowBannerAd (true/false) - show the banner at the top
+  * isShowInterstitialAd (true/false) - show Interstitial ads
+  * interstitialAdSeconds - here you configure how many seconds the interstitial ads appear on the screen, default is 40 seconds, if you want to put it in minutes, add     the value * 60, for example 1 * 60 (one minute) and avoid putting little because it can be banned from the admob
 
-6. buy a coffee on paypal
+   
+   ![alt text](images-ignore/showAds.png)
+
+
+
+
+buy a coffee on paypal
 
    ![alt text](images-ignore/QRCode.png)
 
