@@ -47,6 +47,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.activity.OnBackPressedCallback;
+
 public class MainActivity extends AppCompatActivity {
 
     private WebView webview ;
@@ -247,6 +249,18 @@ if(adsConfig.isShowBannerAd){
         if (gameIsInProgress) {
             InterstitialAdSeconds(timerMilliseconds);
         }
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (interstitialAd != null) {
+                    interstitialAd.show(MainActivity.this);
+                } else {
+                    exitGame();
+                }
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this,onBackPressedCallback);
     }
 
     @Override
@@ -419,15 +433,20 @@ if(adsConfig.isShowBannerAd){
         return result_str.toString();
     }
 
-    @Override
+
+
+
+    //deprecated
+  /***  @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (interstitialAd != null) {
             interstitialAd.show(this);
         } else {
             exitGame();
         }
 
-    }
+    }*/
 
     public  void exitGame(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -453,12 +472,12 @@ if(adsConfig.isShowBannerAd){
         webview.saveState(outState);
     }
     @Override
-    public void onRestoreInstanceState(Bundle outState){
+    public void onRestoreInstanceState(@NonNull Bundle outState){
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
@@ -499,7 +518,7 @@ if(adsConfig.isShowBannerAd){
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

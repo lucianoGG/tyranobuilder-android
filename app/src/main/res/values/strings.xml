@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Minha Novel</string>
+    <string name="app_name">My Novel</string>
     <string name="APPLICATION_ID_ADS">ca-app-pub-3726233273247684~4601565079</string>
     <string name="BannerAd">ca-app-pub-3940256099942544/6300978111</string>
     <string name="InterstitialAd">ca-app-pub-3940256099942544/1033173712</string>

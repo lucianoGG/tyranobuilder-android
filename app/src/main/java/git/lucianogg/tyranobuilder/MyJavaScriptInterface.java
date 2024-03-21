@@ -7,15 +7,14 @@ import org.json.JSONObject;
 
 public class MyJavaScriptInterface {
 
-    private Context context;
-    private String base_path;
+    private final Context context;
+
     public MyJavaScriptInterface(Context context){
         this.context =context;
     }
     public MyJavaScriptInterface(Context context,String base_path){
 
         this.context =context;
-        this.base_path = base_path;
 
     }
 

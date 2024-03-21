@@ -67,3 +67,28 @@ buy a coffee on paypal
 
    ![alt text](images-ignore/QRCode.png)
 
+   ```sh
+   https://www.paypal.com/donate/?hosted_button_id=GUK2K67WAB42Q&source=qr
+   ```
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+   * Fork the Project
+   * Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+   * Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+   * Push to the Branch (`git push origin feature/AmazingFeature`)
+   * Open a Pull Request
+
+<!-- USAGE EXAMPLES -->
+## Usage
+   * open the project in Android Studio
+   * run the project on your device or emulator
+   * test the game
+   * edit the game in TyranoBuilder Studio
+   * export the game to Android
+   * replace the game in the project
+   * run the project on your device or emulator
+   * test the game
+
