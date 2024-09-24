@@ -54,11 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private WebView webview ;
 
     private String base_url ;
-    private String base_path ;
-
     private boolean flag_init = false;
-
-    private static final int PERMISSION_REQUEST_CODE = 1;
 
     private AdView mAdView;
 
@@ -103,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         webview.getSettings().setUseWideViewPort(true);
         webview.clearCache(true);
 
-        MyJavaScriptInterface obj = new MyJavaScriptInterface(this, base_path);
+        MyJavaScriptInterface obj = new MyJavaScriptInterface(this, base_url);
         webview.addJavascriptInterface(obj,"appJsInterface");
 
         try {
@@ -256,7 +252,7 @@ if(adsConfig.isShowBannerAd){
                 if (interstitialAd != null) {
                     interstitialAd.show(MainActivity.this);
                 } else {
-                    exitGame();
+                    finishGame();
                 }
             }
         };
@@ -304,229 +300,93 @@ if(adsConfig.isShowBannerAd){
         };
     }
 
-    public void startGame(BufferedReader reader){
+    //add method to start game, adjust the path to your html file and the path to the tyrano_player.js file
+    public void startGame(BufferedReader reader) {
+        Log.d("MainActivity", "start game!!");
 
-        System.out.println("start game!!");
-
-        try{
-            String s = "";
-
-            StringBuilder et = new StringBuilder();
-            String data;
-            while ((data = reader.readLine()) != null) {
-
-                if(data.contains("</head>")){
-
-                    et.append("<script type='text/javascript' src='file:///android_asset/tyrano_player.js'></script>");
-                    et.append("\n");
-                    et.append("</head>");
-
-
-                }else {
-                    et.append(data);
+        try {
+            StringBuilder htmlBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("</head>")) {
+                    htmlBuilder.append("<script type='text/javascript' src='file:///android_asset/tyrano_player.js'></script>\n");
                 }
-
-                et.append("\n");
+                htmlBuilder.append(line).append("\n");
             }
 
-            s = et.toString();
+            final String htmlContent = htmlBuilder.toString();
+            Log.d("MainActivity", htmlContent);
 
-            final String html_str = s;
+            runOnUiThread(() -> webview.loadDataWithBaseURL(base_url, htmlContent, "text/html", "UTF-8", null));
 
-            System.out.println(html_str);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    webview.loadDataWithBaseURL(base_url, html_str, "text/html", "UTF-8",null);
-                }
-            });
-
-        }catch(Exception e){
-            System.out.print("erroror");
-            System.out.print(e.toString());
+        } catch (IOException e) {
+            Log.e("MainActivity", "Error reading HTML data", e);
         }
-
     }
 
-    public void setStorage(String key, String val){
-        if (Build.VERSION.SDK_INT >= 23)
-        {
-            if (checkPermission())
-            {
-                _setStorage(key, val);
-            } else {
-                requestPermission(); // Code for permission
-            }
-        }
-        else
-        {
-            _setStorage(key, val);
-        }
 
-    }
+    //access to storage of app not need permission
+    //remove the permission of android.permission.WRITE_EXTERNAL_STORAGE in AndroidManifest.xml
+    public void setStorage(String key, String val) {
 
-    public void _setStorage(String key, String val){
+        File file = new File(getFilesDir(), key + ".sav");
 
-        File dataDir = getFilesDir();
-        String localPath = dataDir.getAbsolutePath()+ "/";
-        String save_path = localPath + key +".sav";
-
-        try{
-
-            File file = new File(save_path);
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file,false)));
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)))) {
             pw.println(val);
-            pw.close();
-
-        }catch(IOException e){
-            System.out.println(e);
+        } catch (IOException e) {
+            Toast.makeText(this, "Error writing to file: " + key, Toast.LENGTH_SHORT).show();
+            Log.e("Storage", "Error writing to file: " + key, e);
         }
-
-    }
-
-    public String getStorage(String key){
-        String get = "";
-        if (Build.VERSION.SDK_INT >= 23)
-        {
-            if (checkPermission())
-            {
-                get =  _getStorage(key);
-            } else {
-                requestPermission(); // Code for permission
-            }
-        }
-        else
-        {
-            get =  _getStorage(key);
-        }
-
-        return get;
-    }
-
-    private String _getStorage(String key){
-        File dataDir = getFilesDir();
-        String localPath = dataDir.getAbsolutePath()+ "/";
-        String save_path = localPath + key +".sav";
-        StringBuilder result_str = new StringBuilder();
-        try{
-            File file = new File(save_path);
-
-            if(!file.exists()){
-
-                System.out.println("file not found!");
-                return "";
-            }
-
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            String str ;
-            while((str = br.readLine()) != null){
-                result_str.append(str);
-            }
-
-            br.close();
-        } catch(IOException e){
-            System.out.println(e.toString());
-        }
-
-        return result_str.toString();
     }
 
 
+    public String getStorage(String key) {
 
 
-    //deprecated
-  /***  @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (interstitialAd != null) {
-            interstitialAd.show(this);
-        } else {
-            exitGame();
+        File file = new File(getFilesDir(), key + ".sav");
+
+        if (!file.exists()) {
+            Log.e("Storage", "File not found: " + key);
+            return "";
         }
 
-    }*/
+        StringBuilder result = new StringBuilder();
 
-    public  void exitGame(){
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Error reading file: " + key, Toast.LENGTH_SHORT).show();
+            Log.e("Storage", "Error reading file: " + key, e);
+            return "";
+        }
+
+        return result.toString();
+    }
+
+    public  void finishGame() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
-                .setMessage("sair do jogo?")
+                .setMessage("Exit Game?")
                 .setCancelable(false)
-                .setPositiveButton("SIM",
+                .setPositiveButton("yes",
                         (dialog, id) -> {
                             moveTaskToBack(true);
                             android.os.Process.killProcess(android.os.Process.myPid());
                             System.exit(1);
                         })
 
-                .setNegativeButton("NÃO", (dialog, id) -> dialog.cancel());
+                .setNegativeButton("no", (dialog, id) -> dialog.cancel());
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        webview.saveState(outState);
-    }
-    @Override
-    public void onRestoreInstanceState(@NonNull Bundle outState){
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    public void openUrl(String url){
-        Uri uri = Uri.parse(url);
-        startActivity(new Intent(Intent.ACTION_VIEW,uri));
-
-    }
-
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return result == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder
-                    .setTitle("Permissão para SAVE")
-                    .setMessage("o jogo precisa de permissão para salvar e ler os saves")
-                    .setCancelable(false)
-                    .setPositiveButton("SIM",
-                            (dialog, id) -> {
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivity(intent);
-                            })
-
-                    .setNegativeButton("NÃO", (dialog, id) -> dialog.cancel());
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.e("value", "Permission Granted, Now you can use local drive .");
-            } else {
-                Toast.makeText(this, "Permissão de acesso negado, você não pode salvar e nem carregar", Toast.LENGTH_LONG).show();
-                Log.e("value", "Permission Denied, You cannot use local drive .");
-            }
-        }
+    public void openUrl (String url) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }
